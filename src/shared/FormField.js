@@ -1,7 +1,7 @@
 import React from 'react';
-import {Controller} from 'react-hook-form';
 import {StyleSheet} from 'react-native';
 import {TextInput, Paragraph} from 'react-native-paper';
+import FormController from './FormController';
 
 const styles = StyleSheet.create({
   error: {
@@ -16,6 +16,8 @@ export default function FormField({
   required,
   isPassword,
   error,
+  multiline,
+  pattern,
 }) {
   let rules = {};
   if (required) {
@@ -26,23 +28,23 @@ export default function FormField({
   }
 
   return (
-    <>
-      <Controller
-        control={control}
-        name={name}
-        render={({field: {onChange, value, onBlur}}) => (
-          <TextInput
-            label={label}
-            mode="outlined"
-            value={value}
-            secureTextEntry={isPassword}
-            onBlur={onBlur}
-            onChangeText={text => onChange(text)}
-          />
-        )}
-        rules={rules}
-      />
-      {error && <Paragraph styles={styles.error}>{error}</Paragraph>}
-    </>
+    <FormController
+      name={name}
+      control={control}
+      render={({field: {onChange, value, onBlur}}) => (
+        <TextInput
+          label={label}
+          // mode="outlined"
+          value={value}
+          secureTextEntry={isPassword}
+          onBlur={onBlur}
+          onChangeText={text => onChange(text)}
+          multiline={multiline}
+        />
+      )}
+      error={error}
+      required={required}
+      pattern={pattern}
+    />
   );
 }
