@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
@@ -7,6 +7,8 @@ import { SCREEN_NAMES } from '../../../constants/screens.constants';
 import FormField from '../../shared/FormField';
 import Logo from '../../shared/Logo';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../../sources';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,26 +44,42 @@ const styles = StyleSheet.create({
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userLoginReducer = useSelector(state => state.userReducer.userLogin);
+  const [error, setError] = useState(null);
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({ mode: 'all' });
 
-  const handleLogin = values => {
-    navigation.reset({
-      index: 0,
-        routes: [
-          {
-            name: SCREEN_NAMES.HOME_NAVIGATOR,
-          },
-        ],
-    });
+  const handleLogin = ({email, password}) => {
+    dispatch(loginUser({
+      email,
+      password
+    }, handleLoginError));
   };
+
+  const handleLoginError = (error) => {
+    setError(error);
+  }
 
   const handleSignUpPress = () => {
     navigation.navigate(SCREEN_NAMES.SIGNUP);
   };
+
+  useEffect(() => {
+    if(userLoginReducer.isSuccess) {
+      navigation.reset({
+        index: 0,
+          routes: [
+            {
+              name: SCREEN_NAMES.HOME_NAVIGATOR,
+            },
+          ],
+      });
+    }
+  }, [userLoginReducer.isFetched]);
 
   return (
     <SimpleLayout>
@@ -87,6 +105,7 @@ export default function LoginScreen() {
             required={true}
             error={errors.password?.message}
           />
+          {error && <Text style={styles.error}>{error}</Text>}
           <Button
             mode="contained"
             onPress={handleSubmit(handleLogin)}
