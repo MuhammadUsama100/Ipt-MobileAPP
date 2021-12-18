@@ -110,7 +110,8 @@ export default function LoginScreen() {
             mode="contained"
             onPress={handleSubmit(handleLogin)}
             style={styles.loginButton}
-            disabled={!isValid}>
+            disabled={!isValid || userLoginReducer.isLoading}
+            loading={userLoginReducer.isLoading}>
             Login
           </Button>
           <Paragraph style={styles.bottomText}>

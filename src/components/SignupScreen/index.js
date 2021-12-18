@@ -1,14 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Title, TextInput, Paragraph, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
 import { SCREEN_NAMES } from '../../../constants/screens.constants';
+import { ERRORS, MESSAGES } from '../../constants';
 import FormField from '../../shared/FormField';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
 import LocationPickerField from '../../shared/LocationPickerField';
 import Logo from '../../shared/Logo';
+import { signupUser } from '../../sources';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,7 +26,6 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 20,
-    flex: 1,
   },
   headline: {
     fontSize: 30,
@@ -39,6 +41,9 @@ const styles = StyleSheet.create({
   loginText: {
     color: 'blue',
   },
+  error: {
+    color: 'red',
+  }
 });
 
 export default function SignupScreen() {
@@ -47,11 +52,34 @@ export default function SignupScreen() {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({ mode: 'all' });
+
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userSignupReducer = useSelector(state => state.userReducer.userSignup);
+
+  const [error, setError] = useState(null);
+  const [buttonText, setButtonText] = useState("Sign Up");
 
   const handleSignup = values => {
-    console.log(values);
+    if(values.password != values.confirm_password) {
+      setError(ERRORS.PASSWORDS_DONT_MATCH);
+    } else {
+      delete values['confirm_password'];
+      console.log(values);
+      dispatch(signupUser(values, handleSignupError));
+    }
   };
+
+  const handleSignupError = (error) => {
+    console.log(JSON.stringify(error));
+  };
+
+  useEffect(() => {
+    if(userSignupReducer.isSuccess) {
+      alert(MESSAGES.SIGNUP_SUCCESS);
+      navigation.navigate(SCREEN_NAMES.LOGIN);
+    }
+  }, [userSignupReducer.isFetched]);
 
   const handleLoginUpPress = () => {
     navigation.navigate(SCREEN_NAMES.LOGIN);
@@ -61,63 +89,61 @@ export default function SignupScreen() {
     <SimpleLayout>
       <View style={styles.container}>
         <SafeAreaView style={styles.formContainer}>
-          <ScrollView>
-            <View style={styles.logoContainer}>
-              <Logo />
-            </View>
-            <Title style={styles.headline}>Sign Up</Title>
-            <FormField
-              control={control}
-              name="name"
-              label="Name"
-              required={true}
-              error={errors.name?.message}
-            />
-            <FormField
-              control={control}
-              name="email"
-              label="Email"
-              required={true}
-              error={errors.email?.message}
-            />
-            <FormField
-              control={control}
-              name="password"
-              label="Password"
-              required={true}
-              error={errors.password?.message}
-              isPassword={true}
-            />
-            <FormField
-              control={control}
-              name="confirm_password"
-              label="Confirm Password"
-              required={true}
-              error={errors.confirm_password?.message}
-              isPassword={true}
-            />
-            <LocationPickerField
-              control={control}
-              name="location"
-              label="Location"
-              required={true}
-              error={errors.location?.message}
-              isPassword={true}
-            />
-            <Button
-              mode="contained"
-              onPress={handleSubmit(handleSignup)}
-              style={styles.signupButton}
-              disabled={!isValid}>
-              Sign Up
-            </Button>
-            <Paragraph style={styles.bottomText}>
-              Already have an account?{' '}
-              <Text style={styles.loginText} onPress={handleLoginUpPress}>
-                Login
-              </Text>
-            </Paragraph>
-          </ScrollView>
+          <View style={styles.logoContainer}>
+            <Logo />
+          </View>
+          <Title style={styles.headline}>Sign Up</Title>
+          <FormField
+            control={control}
+            name="name"
+            label="Name"
+            required={true}
+            error={errors.name?.message}
+          />
+          <FormField
+            control={control}
+            name="email"
+            label="Email"
+            required={true}
+            error={errors.email?.message}
+          />
+          <FormField
+            control={control}
+            name="password"
+            label="Password"
+            required={true}
+            error={errors.password?.message}
+            isPassword={true}
+          />
+          <FormField
+            control={control}
+            name="confirm_password"
+            label="Confirm Password"
+            required={true}
+            error={errors.confirm_password?.message}
+            isPassword={true}
+          />
+          <LocationPickerField
+            control={control}
+            name="location"
+            label="Location"
+            required={true}
+            error={errors.location?.message}
+          />
+          {error && <Text style={styles.error}>{error}</Text>}
+          <Button
+            mode="contained"
+            onPress={handleSubmit(handleSignup)}
+            style={styles.signupButton}
+            disabled={!isValid}>
+            {buttonText}
+          </Button>
+          <Paragraph style={styles.bottomText}>
+            Already have an account?{' '}
+            <Text style={styles.loginText} onPress={handleLoginUpPress}>
+              Login
+            </Text>
+          </Paragraph>
         </SafeAreaView>
       </View>
     </SimpleLayout>

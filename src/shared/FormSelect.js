@@ -33,14 +33,6 @@ export default function FormSelect({
             name={name}
             control={control}
             render={({ field: { onChange, value, onBlur } }) => (
-                // <TextInput
-                //   label={label}
-                //   mode="outlined"
-                //   value={value}
-                //   secureTextEntry={isPassword}
-                //   onBlur={onBlur}
-                //   onChangeText={text => onChange(text)}
-                // />
                 <SearchableDropdown
                     selectedItems={selectedItems}
                     onItemSelect={(item) => {
