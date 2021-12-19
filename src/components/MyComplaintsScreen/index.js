@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { ActivityIndicator, Card, Paragraph, Title } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
+import ComplaintCard from '../../shared/ComplaintCard';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
 import { getMyComplaints } from '../../sources';
 
@@ -27,15 +28,8 @@ export default function MyComplaintsScreen() {
         <SimpleLayout>
             <ScrollView>
                 {getMyComplaintsReducer.data.length > 0 && getMyComplaintsReducer.data.map((complaint) => {
-                    console.log(complaint);
                     return (
-                        <Card key={complaint.complainId} style={styles.complaintContainer}>
-                            <Card.Title title={complaint.offenseId} subtitle={`Location: ${complaint.locationId}`} />
-                            <Card.Content>
-                                <Paragraph style={{fontWeight: 'bold'}}>Description:</Paragraph>
-                                <Paragraph>{complaint.detail}</Paragraph>
-                            </Card.Content>
-                        </Card>
+                        <ComplaintCard key={complaint.complainId} complaint={complaint} allowEndorsement={false} />
                     )
                 })}
                 {getMyComplaintsReducer.data.length < 1 && <Paragraph style={{alignSelf: 'center'}}>No complaints registered.</Paragraph>}

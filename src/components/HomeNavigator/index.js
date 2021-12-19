@@ -2,12 +2,14 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemL
 import React from 'react';
 import { SCREEN_NAMES } from '../../../constants/screens.constants';
 import HomeScreen from '../HomeScreen';
-import { Divider, Text, Title } from 'react-native-paper';
+import { Divider, Paragraph, Text, Title } from 'react-native-paper';
 import RegisterComplaintScreen from '../RegisterComplaintScreen';
 import BrowseComplaintsScreen from '../BrowseComplaintsScreen';
 import MyComplaintsScreen from '../MyComplaintsScreen';
-import { useDispatch } from 'react-redux';
+import Logo from '../../shared/Logo';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../sources';
+import { View } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,8 +17,18 @@ function CustomDrawerContent(props) {
     return (
         <DrawerContentScrollView {...props}>
             <DrawerItem
-                label={() => <Title>Citizens Portal</Title>}
+                label={() => {
+                    return (
+                        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                            <View style={{width: 50, marginRight: 10}}>
+                                <Logo />
+                            </View>
+                            <Title>Citizens Portal</Title>
+                        </View>
+                    )
+                }}
             />
+            <Divider />
             <DrawerItemList {...props} />
             <Divider />
             <DrawerItem
@@ -40,6 +52,7 @@ function CustomDrawerContent(props) {
 
 export default function HomeNavigator() {
     const dispatch = useDispatch();
+
     return (
         <Drawer.Navigator
             initialRouteName={SCREEN_NAMES.HOME}

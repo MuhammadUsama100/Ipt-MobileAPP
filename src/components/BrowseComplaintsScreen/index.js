@@ -7,15 +7,7 @@ import SimpleLayout from '../../shared/layout/SimpleLayout';
 import LocationPickerField from '../../shared/LocationPickerField';
 import OffensePickerField from '../../shared/OffensePickerField';
 import { getAllComplaints, postEndorsement } from '../../sources';
-
-const styles = StyleSheet.create({
-    complaintContainer: {
-        marginBottom: 20,
-    },
-    endorseButtonContainer: {
-        justifyContent: 'flex-end'
-    }
-});
+import ComplaintCard from '../../shared/ComplaintCard';
 
 export default function BrowseComplaintsScreen() {
     const {
@@ -33,16 +25,8 @@ export default function BrowseComplaintsScreen() {
     const getAllComplaintsReducer = useSelector(state => state.complaintReducer.getAllComplaints);
 
     useEffect(() => {
-        console.log(filters);
         dispatch(getAllComplaints(filters));
     }, [filters]);
-
-    const handleComplaintEndorse = (complaint) => {
-        dispatch(postEndorsement({
-            endorBy: userLoginReducer.data['userID'],
-            complainId: complaint.complainId,
-        }));
-    }
 
     const handleLocationSelect = (location) => {
         setFilters({
@@ -65,7 +49,6 @@ export default function BrowseComplaintsScreen() {
                 control={control}
                 name="type"
                 label="Type"
-                required={true}
                 error={errors.type?.message}
                 onOffenseSelect={handleOffenseSelect}
             />
@@ -73,7 +56,6 @@ export default function BrowseComplaintsScreen() {
                 control={control}
                 name="location"
                 label="Location"
-                required={true}
                 error={errors.location?.message}
                 onLocationSelect={handleLocationSelect}
             />
@@ -82,28 +64,16 @@ export default function BrowseComplaintsScreen() {
                 setFilters({});
             }}>Reset</Button>
             <Divider style={{marginTop: 10, marginBottom: 10}} />
-            {!getAllComplaintsReducer.isLoading && <ScrollView>
-                {getAllComplaintsReducer.data.length > 0 && getAllComplaintsReducer.data.map((complaint) => {
-                    return (
-                        <Card key={complaint.complainId} style={styles.complaintContainer}>
-                            <Card.Title title={complaint.offense.name} subtitle={`Location: ${complaint.location.name}`} />
-                            <Card.Content>
-                                <Paragraph style={{fontWeight: 'bold'}}>Description:</Paragraph>
-                                <Paragraph>{complaint.detail}</Paragraph>
-                            </Card.Content>
-                            <Card.Actions style={styles.endorseButtonContainer}>
-                            <Button
-                                onPress={() => handleComplaintEndorse(complaint)}
-                                loading={false}
-                            >
-                                Endorse
-                            </Button>
-                            </Card.Actions>
-                        </Card>
-                    )
-                })}
-                {getAllComplaintsReducer.data.length < 1 && <Paragraph style={{alignSelf: 'center'}}>No complaints registered.</Paragraph>}
-            </ScrollView>}
+            {!getAllComplaintsReducer.isLoading && (
+                <ScrollView>
+                    {getAllComplaintsReducer.data?.length > 0 && getAllComplaintsReducer.data.map((complaint) => {
+                        return (
+                            <ComplaintCard key={complaint.complainId} complaint={complaint} endorsementBy={userLoginReducer.data['userID']} />
+                        )
+                    })}
+                    {getAllComplaintsReducer.data?.length < 1 && <Paragraph style={{alignSelf: 'center'}}>No complaints registered.</Paragraph>}
+                </ScrollView>
+            )}
             {getAllComplaintsReducer.isLoading && <ActivityIndicator />}
         </SimpleLayout>
     )

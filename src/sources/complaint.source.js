@@ -58,7 +58,7 @@ export const getAllComplaints = (data, errorHandler = () => { }) => {
             }
         })
         .then(res => {
-            console.log(res.data);
+            console.log(res);
             dispatch(getAllComplaintsSuccess(res.data['data']['$values']));
         })
         .catch(err => {

@@ -39,6 +39,7 @@ export default function RegisterComplaintScreen() {
     useEffect(() => {
         if(registerComplaintReducer.isSuccess) {
             alert("Complaint registered successfully!");
+            dispatch(registerComplaintClear());
         }
     }, [registerComplaintReducer.isFetched]);
 
