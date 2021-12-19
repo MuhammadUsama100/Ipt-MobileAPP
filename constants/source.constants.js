@@ -6,4 +6,5 @@ export const GET_ALL_OFFENSE = 'Offense';
 
 export const GET_ALL_LOCATION = 'Location';
 
+export const GET_MY_COMPLAINTS = 'Complain';
 export const REGISTER_COMPLAINT = 'Complain';
