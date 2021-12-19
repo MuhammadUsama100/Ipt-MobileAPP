@@ -26,7 +26,6 @@ export const loginUser = ({ email, password }, errorHandler = () => { }) => {
             data['token'] = data['jwt'];
             axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
             setToAsyncStorage('user', JSON.stringify(data));
-            console.log(typeof data, data);
             dispatch(loginUserSuccess(data));
         })
         .catch(err => {

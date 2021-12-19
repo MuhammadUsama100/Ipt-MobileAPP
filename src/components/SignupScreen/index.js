@@ -57,17 +57,25 @@ export default function SignupScreen() {
   const userSignupReducer = useSelector(state => state.userReducer.userSignup);
 
   const [error, setError] = useState(null);
-  const [buttonText, setButtonText] = useState("Sign Up");
+  const [selectedLocation, setSelectedLocation] = useState();
 
   const handleSignup = values => {
     if(values.password != values.confirm_password) {
       setError(ERRORS.PASSWORDS_DONT_MATCH);
     } else {
       delete values['confirm_password'];
-      console.log(values);
-      dispatch(signupUser(values, handleSignupError));
+      const payload = {
+        ...values,
+        locationId: selectedLocation.id,
+      };
+      console.log(payload);
+      dispatch(signupUser(payload, handleSignupError));
     }
   };
+
+  const handleLocationSelect = (location) => {
+    setSelectedLocation(location);
+}
 
   const handleSignupError = (error) => {
     console.log(JSON.stringify(error));
@@ -128,6 +136,7 @@ export default function SignupScreen() {
             label="Location"
             required={true}
             error={errors.location?.message}
+            onLocationSelect={handleLocationSelect}
           />
           {error && <Text style={styles.error}>{error}</Text>}
           <Button
@@ -135,7 +144,7 @@ export default function SignupScreen() {
             onPress={handleSubmit(handleSignup)}
             style={styles.signupButton}
             disabled={!isValid}>
-            {buttonText}
+            Sign Up
           </Button>
           <Paragraph style={styles.bottomText}>
             Already have an account?{' '}
