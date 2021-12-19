@@ -1,6 +1,14 @@
 import { LOGIN_USER, SIGNUP_USER } from "../../constants/source.constants";
-import { loginUserFail, loginUserInit, loginUserSuccess, signupUserFail, signupUserInit, signupUserSuccess } from "../redux/actions";
-import { setToAsyncStorage } from "../utils";
+import { 
+    loginUserFail, 
+    loginUserInit, 
+    loginUserSuccess,
+    logoutUser as logout, 
+    signupUserFail, 
+    signupUserInit, 
+    signupUserSuccess
+} from "../redux/actions";
+import { removeFromAsyncStorage, setToAsyncStorage } from "../utils";
 import axios from 'axios';
 
 export const loginUser = ({ email, password }, errorHandler = () => { }) => {
@@ -45,3 +53,11 @@ export const signupUser = (data, errorHandler = () => { }) => {
         });
     }
 }
+
+export const logoutUser = () => {
+    return dispatch => {
+      dispatch(logout());
+      axios.defaults.headers.common['Authorization'] = undefined;
+      removeFromAsyncStorage('user');
+    }
+  }

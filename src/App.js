@@ -46,7 +46,7 @@ export default function Main() {
       <PaperProvider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName={SCREEN_NAMES.SIGNUP}
+            initialRouteName={SCREEN_NAMES.SPLASH}
             screenOptions={{
               header: NavigationBar,
             }}

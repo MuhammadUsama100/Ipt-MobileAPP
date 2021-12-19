@@ -6,6 +6,8 @@ import { Divider, Text, Title } from 'react-native-paper';
 import RegisterComplaintScreen from '../RegisterComplaintScreen';
 import BrowseComplaintsScreen from '../BrowseComplaintsScreen';
 import MyComplaintsScreen from '../MyComplaintsScreen';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../../sources';
 
 const Drawer = createDrawerNavigator();
 
@@ -19,14 +21,17 @@ function CustomDrawerContent(props) {
             <Divider />
             <DrawerItem
                 label={() => <Text
-                    onPress={() => props.navigation.reset({
-                        index: 0,
-                        routes: [
-                            {
-                                name: SCREEN_NAMES.LOGIN,
-                            },
-                        ],
-                    })}
+                    onPress={() => {
+                        props.dispatch(logoutUser());
+                        props.navigation.reset({
+                            index: 0,
+                            routes: [
+                                {
+                                    name: SCREEN_NAMES.LOGIN,
+                                },
+                            ],
+                        })
+                    }}
                     style={{ color: 'red' }}>Logout</Text>}
             />
         </DrawerContentScrollView>
@@ -34,10 +39,11 @@ function CustomDrawerContent(props) {
 }
 
 export default function HomeNavigator() {
+    const dispatch = useDispatch();
     return (
         <Drawer.Navigator
             initialRouteName={SCREEN_NAMES.HOME}
-            drawerContent={CustomDrawerContent}
+            drawerContent={(props) => <CustomDrawerContent dispatch={dispatch} {...props} />}
         >
             <Drawer.Screen
                 name={SCREEN_NAMES.HOME}

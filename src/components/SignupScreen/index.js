@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#f2eee3',
   },
   logoContainer: {
     width: '50%',
