@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { ActivityIndicator, Card, Paragraph, Title } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import ComplaintCard from '../../shared/ComplaintCard';
@@ -22,11 +22,22 @@ export default function MyComplaintsScreen() {
         dispatch(getMyComplaints());
     }, []);
 
+    const handleOnRefresh = () => {
+        dispatch(getMyComplaints());
+    }
+
     if(getMyComplaintsReducer.isSuccess != true) return <ActivityIndicator /> 
 
     return (
         <SimpleLayout>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={getMyComplaintsReducer.isLoading}
+                        onRefresh={handleOnRefresh}
+                    />
+                }
+            >
                 {getMyComplaintsReducer.data.length > 0 && getMyComplaintsReducer.data.map((complaint) => {
                     return (
                         <ComplaintCard key={complaint.complainId} complaint={complaint} allowEndorsement={false} />

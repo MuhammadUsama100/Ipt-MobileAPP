@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView, StyleSheet } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { ActivityIndicator, Button, Card, Divider, Paragraph, Text } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
@@ -27,6 +27,10 @@ export default function BrowseComplaintsScreen() {
     useEffect(() => {
         dispatch(getAllComplaints(filters));
     }, [filters]);
+
+    const handleOnRefresh = () => {
+        dispatch(getAllComplaints(filters));
+    }
 
     const handleLocationSelect = (location) => {
         setFilters({
@@ -65,7 +69,14 @@ export default function BrowseComplaintsScreen() {
             }}>Reset</Button>
             <Divider style={{marginTop: 10, marginBottom: 10}} />
             {!getAllComplaintsReducer.isLoading && (
-                <ScrollView>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={getAllComplaintsReducer.isLoading}
+                            onRefresh={handleOnRefresh}
+                        />
+                    }
+                >
                     {getAllComplaintsReducer.data?.length > 0 && getAllComplaintsReducer.data.map((complaint) => {
                         return (
                             <ComplaintCard key={complaint.complainId} complaint={complaint} endorsementBy={userLoginReducer.data['userID']} />

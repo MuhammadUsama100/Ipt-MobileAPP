@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Title, useTheme } from 'react-native-paper';
 import ComplaintStats from './ComplaintStats';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
@@ -48,17 +48,30 @@ export default function HomeScreen() {
         };
     });
 
+    const handleOnRefresh = () => {
+        dispatch(getComplaintStats());
+    };
+
     return (
         <SimpleLayout>
-            <Title style={styles.heading}>Complaints Overview</Title>
-            <View style={styles.complaintStatsContainer}>
-                <ComplaintStats val={total} heading={"Total"} subHeading={"complaints registered"} />
-                <ComplaintStats val={avg} heading={"Average"} subHeading={"per location"} />
-            </View>
-            <VictoryPie
-                labelPlacement="perpendicular"
-                data={data}
-            />
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={getComplaintStatsReducer.isLoading}
+                        onRefresh={handleOnRefresh}
+                    />
+                }
+            >
+                <Title style={styles.heading}>Complaints Overview</Title>
+                <View style={styles.complaintStatsContainer}>
+                    <ComplaintStats val={total} heading={"Total"} subHeading={"complaints registered"} />
+                    <ComplaintStats val={avg} heading={"Average"} subHeading={"per location"} />
+                </View>
+                <VictoryPie
+                    labelPlacement="perpendicular"
+                    data={data}
+                />
+            </ScrollView>
         </SimpleLayout>
     )
 }
