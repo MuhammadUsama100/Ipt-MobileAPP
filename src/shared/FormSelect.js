@@ -17,8 +17,8 @@ export default function FormSelect({
     required,
     items,
     error,
+    onItemSelect,
 }) {
-    const theme = useTheme();
     const [selectedItems, setSelectedItems] = useState([]);
     let rules = {};
     if (required) {
@@ -36,9 +36,9 @@ export default function FormSelect({
                 <SearchableDropdown
                     selectedItems={selectedItems}
                     onItemSelect={(item) => {
+                        if(onItemSelect) onItemSelect(item);
                         setSelectedItems([item]);
                         onChange(item.name);
-                        // console.log(item);
                     }}
                     containerStyle={{ padding: 5 }}
                     itemStyle={{

@@ -25,7 +25,7 @@ export default function SplashScreen() {
   useEffect(() => {
     getFromAsyncStorage('user').then((userData) => {
       if (userData) {
-        dispatch(loginUserSuccess(userData));
+        dispatch(loginUserSuccess(JSON.parse(userData)));
       } else {
         navigation.reset({
           index: 0,

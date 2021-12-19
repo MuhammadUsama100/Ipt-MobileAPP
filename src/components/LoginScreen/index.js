@@ -9,6 +9,7 @@ import Logo from '../../shared/Logo';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../sources';
+import { ERRORS } from '../../constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -61,7 +62,11 @@ export default function LoginScreen() {
   };
 
   const handleLoginError = (error) => {
-    setError(error);
+    if(error === 404) {
+      setError(ERRORS.USER_NOT_FOUND);
+    } else if(error === 403) {
+      setError(ERRORS.UNAUTHORIZED);
+    }
   }
 
   const handleSignUpPress = () => {

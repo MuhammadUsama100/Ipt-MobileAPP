@@ -36,6 +36,7 @@ axios.defaults.baseURL = BASE_URL;
 
 if (!axios.defaults.headers.common['Authorization']) {
   getFromAsyncStorage('user').then((userData) => {
+    userData = JSON.parse(userData);
     axios.defaults.headers.common['Authorization'] = userData ? `Bearer ${userData.token}` : null;
   })
 }

@@ -22,15 +22,17 @@ export const loginUser = ({ email, password }, errorHandler = () => { }) => {
                 'Authorization': null
             }
         }).then(res => {
-            res.data['token'] = res.data['jwt'];
-            axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
-            setToAsyncStorage('user', JSON.stringify(res.data));
-            dispatch(loginUserSuccess(res));
-            // dispatch(getUserProfile(res.data));
+            let data = res.data['data'];
+            data['token'] = data['jwt'];
+            axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+            setToAsyncStorage('user', JSON.stringify(data));
+            console.log(typeof data, data);
+            dispatch(loginUserSuccess(data));
         })
         .catch(err => {
-            errorHandler(err.response.data);
-            dispatch(loginUserFail(err.response.data));
+            console.log(err.response.status);
+            errorHandler(err.response.status);
+            dispatch(loginUserFail(err.response.status));
         });
     }
 }

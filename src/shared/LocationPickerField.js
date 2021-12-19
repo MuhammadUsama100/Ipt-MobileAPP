@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllLocation } from '../sources';
 import FormSelect from './FormSelect';
 
 export default function LocationPickerField({
@@ -6,43 +8,27 @@ export default function LocationPickerField({
     required,
     error,
     name,
-    label
+    label,
+    onLocationSelect,
 }) {
 
-    const cities = [
-        {
-            id: 1,
-            name: 'JavaScript',
-        },
-        {
-            id: 2,
-            name: 'Java',
-        },
-        {
-            id: 3,
-            name: 'Ruby',
-        },
-        {
-            id: 4,
-            name: 'React Native',
-        },
-        {
-            id: 5,
-            name: 'PHP',
-        },
-        {
-            id: 6,
-            name: 'Python',
-        },
-        {
-            id: 7,
-            name: 'Go',
-        },
-        {
-            id: 8,
-            name: 'Swift',
-        },
-    ];
+    const dispatch = useDispatch();
+    const getAllLocationReducer = useSelector(state => state.locationReducer.getAllLocation);
+    const [locations, setLocations] = useState([]);
+
+    useEffect(() => {
+        dispatch(getAllLocation());
+    }, []);
+
+    useEffect(() => {
+        if(getAllLocationReducer.isSuccess) {
+            setLocations(getAllLocationReducer.data.map((location) => ({id: location.locationId, name: location.name})));
+        }
+    }, [getAllLocationReducer.isFetched]);
+
+    const handleLocationSelect = (location) => {
+        if(onLocationSelect) onLocationSelect(location);
+    };
 
     return (
         <FormSelect
@@ -51,7 +37,8 @@ export default function LocationPickerField({
             label={label}
             required={required}
             error={error}
-            items={cities}
+            items={locations}
+            onItemSelect={handleLocationSelect}
         />
     )
 }
