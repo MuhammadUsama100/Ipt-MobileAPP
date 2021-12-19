@@ -20,12 +20,17 @@ export default function ComplaintCard({complaint, endorsementBy, allowEndorsemen
     const [loading, setLoading] = useState(false);
     const postEndorsementReducer = useSelector(state => state.endorsementReducer.postEndorsement);
 
+    const handlePostEndorsementError = (err) => {
+        setLoading(false);
+        alert(err.error + "sed");
+    }
+
     const handleComplaintEndorse = (complaint) => {
         setLoading(true);
         dispatch(postEndorsement({
             endorBy: endorsementBy,
             complainId: complaint.complainId,
-        }));
+        }, handlePostEndorsementError));
     }
 
     useEffect(() => {

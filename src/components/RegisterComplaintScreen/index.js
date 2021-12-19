@@ -52,6 +52,7 @@ export default function RegisterComplaintScreen() {
     }
 
     const handleRegisterComplaint = (values) => {
+        console.log(selectedOffense, selectedLocation);
         const payload = {
             detail: values.description,
             title: "",
@@ -76,7 +77,7 @@ export default function RegisterComplaintScreen() {
                     label="Offense"
                     required={true}
                     error={errors.offense?.message}
-                    onItemSelect={handleOffenseSelect}
+                    onOffenseSelect={handleOffenseSelect}
                 />
                 <LocationPickerField
                     control={control}

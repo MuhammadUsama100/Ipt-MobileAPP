@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { SCREEN_NAMES } from '../../../constants/screens.constants';
 import { ERRORS, MESSAGES } from '../../constants';
+import { signupUserClear } from '../../redux/actions';
 import FormField from '../../shared/FormField';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
 import LocationPickerField from '../../shared/LocationPickerField';
@@ -78,13 +79,14 @@ export default function SignupScreen() {
 }
 
   const handleSignupError = (error) => {
-    console.log(JSON.stringify(error));
+    console.log(error);
   };
 
   useEffect(() => {
     if(userSignupReducer.isSuccess) {
       alert(MESSAGES.SIGNUP_SUCCESS);
       navigation.navigate(SCREEN_NAMES.LOGIN);
+      dispatch(signupUserClear());
     }
   }, [userSignupReducer.isFetched]);
 
