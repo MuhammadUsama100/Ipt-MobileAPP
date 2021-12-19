@@ -7,8 +7,10 @@ import FormField from '../../shared/FormField';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import LocationPickerField from '../../shared/LocationPickerField';
+import OffensePickerField from '../../shared/OffensePickerField';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllOffense, registerComplaint } from '../../sources';
+import { registerComplaintClear } from '../../redux/actions';
 
 const styles = StyleSheet.create({
   registerComplaintButton: {
@@ -35,18 +37,10 @@ export default function RegisterComplaintScreen() {
     const registerComplaintReducer = useSelector(state => state.complaintReducer.registerComplaint);
 
     useEffect(() => {
-        dispatch(getAllOffense());
-    }, []);
-
-    useEffect(() => {
         if(registerComplaintReducer.isSuccess) {
             alert("Complaint registered successfully!");
         }
     }, [registerComplaintReducer.isFetched]);
-
-    if(getAllOffenseReducer.isSuccess != true && getAllLocationReducer.isSuccess != true) return <ActivityIndicator />;
-
-    const offenses = getAllOffenseReducer.data.map((offense) => ({id: offense.offenseId, name: offense.name}));
 
     const handleLocationSelect = (location) => {
         setSelectedLocation(location);
@@ -75,13 +69,12 @@ export default function RegisterComplaintScreen() {
     return (
         <SimpleLayout>
             <SafeAreaView>
-                <FormSelect
+                <OffensePickerField
                     control={control}
-                    name="type"
-                    label="Type"
+                    name="offense"
+                    label="Offense"
                     required={true}
-                    error={errors.type?.message}
-                    items={offenses}
+                    error={errors.offense?.message}
                     onItemSelect={handleOffenseSelect}
                 />
                 <LocationPickerField

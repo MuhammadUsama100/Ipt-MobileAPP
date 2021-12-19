@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Caption, Title, useTheme } from 'react-native-paper';
-import ComplaintStats from './ComplaintStats/ComplaintStats';
+import { ActivityIndicator, Title, useTheme } from 'react-native-paper';
+import ComplaintStats from './ComplaintStats';
 import SimpleLayout from '../../shared/layout/SimpleLayout';
 import { VictoryPie } from 'victory-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { getComplaintStats } from '../../sources';
 
 const makeStyles = theme => StyleSheet.create({
     heading: {
@@ -21,19 +23,41 @@ const makeStyles = theme => StyleSheet.create({
 
 export default function HomeScreen() {
     const styles = makeStyles(useTheme());
+    const dispatch = useDispatch();
+
+    const getComplaintStatsReducer = useSelector(state => state.complaintReducer.getComplaintStats);
+
+    useEffect(() => {
+        dispatch(getComplaintStats());
+    }, []);
+
+    if(getComplaintStatsReducer.isSuccess != true) return <ActivityIndicator />
+
+    const total = getComplaintStatsReducer.data.reduce((prev, curr) => {
+        delete curr['$id'];
+        return prev + parseInt(Object.values(curr)[0], 10)
+    }, 0);
+
+    const avg = total / getComplaintStatsReducer.data.length;
+
+    const data = getComplaintStatsReducer.data.map((val) => {
+        delete val['$id'];
+        return {
+            x: Object.keys(val)[0],
+            y: Object.values(val)[0]
+        };
+    });
+
     return (
         <SimpleLayout>
             <Title style={styles.heading}>Complaints Overview</Title>
             <View style={styles.complaintStatsContainer}>
-                <ComplaintStats val={300} heading={"Pakistan"} subHeading={"complaints registered"} />
-                <ComplaintStats val={70} heading={"Karachi"} subHeading={"complaints registered"} />
+                <ComplaintStats val={total} heading={"Total"} subHeading={"complaints registered"} />
+                <ComplaintStats val={avg} heading={"Average"} subHeading={"per location"} />
             </View>
             <VictoryPie
-                data={[
-                    { x: "Karachi", y: 35 },
-                    { x: "Islamabad", y: 40 },
-                    { x: "Quetta", y: 55 }
-                ]}
+                labelPlacement="perpendicular"
+                data={data}
             />
         </SimpleLayout>
     )

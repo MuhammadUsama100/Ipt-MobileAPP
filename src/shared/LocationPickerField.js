@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllLocation } from '../sources';
 import FormSelect from './FormSelect';
@@ -29,6 +30,8 @@ export default function LocationPickerField({
     const handleLocationSelect = (location) => {
         if(onLocationSelect) onLocationSelect(location);
     };
+
+    if(getAllLocationReducer.isLoading) return <ActivityIndicator />;
 
     return (
         <FormSelect

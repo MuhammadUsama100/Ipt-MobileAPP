@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
 export default function MyComplaintsScreen() {
 
     const dispatch = useDispatch();
-    const [complaints, setComplaints] = useState();
     
     const getMyComplaintsReducer = useSelector(state => state.complaintReducer.getMyComplaints);
 
@@ -23,8 +22,6 @@ export default function MyComplaintsScreen() {
     }, []);
 
     if(getMyComplaintsReducer.isSuccess != true) return <ActivityIndicator /> 
-
-    console.log(getMyComplaintsReducer.data);
 
     return (
         <SimpleLayout>

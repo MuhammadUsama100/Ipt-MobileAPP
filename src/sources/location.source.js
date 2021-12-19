@@ -7,7 +7,7 @@ export const getAllLocation = (data, errorHandler = () => { }) => {
         dispatch(getAllLocationInit());
         axios.get(GET_ALL_LOCATION)
         .then(res => {
-            dispatch(getAllLocationSuccess(res.data['data']));
+            dispatch(getAllLocationSuccess(res.data['data']['$values']));
         })
         .catch(err => {
             console.log(err);

@@ -8,7 +8,7 @@ export const getAllOffense = (data, errorHandler = () => { }) => {
         axios.get(GET_ALL_OFFENSE)
         .then(res => {
             console.log(res.data);
-            dispatch(getAllOffenseSuccess(res.data['data']));
+            dispatch(getAllOffenseSuccess(res.data['data']['$values']));
         })
         .catch(err => {
             console.log(err);
